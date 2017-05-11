@@ -1,5 +1,14 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../paper-input/paper-textarea.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-form/iron-form.html">
+
+<link rel="import" href="../ct-editable-switcher/ct-editable-switcher.html">
+<link rel="import" href="../ct-shared-styles/ct-application-theme.html">
+
 <!--
 `ct-view-settings-tokens`
 Element to view and edit Email and SMS templates for Tokens
@@ -7,71 +16,122 @@ Element to view and edit Email and SMS templates for Tokens
 @demo demo/index.html
 -->
 
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-input/paper-input-behavior.html">
-<link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icons/editor-icons.html">
-<link rel="import" href="../ct-shared-styles/ct-application-theme.html">
-
-
-<!--
-`ct-view-dormant-meters`
-View the dormant meters template
-
-@demo demo/index.html
--->
-
 <dom-module id="ct-view-settings-tokens">
   <template>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <style is="custom-style">
-    :host {
-    }
+      :host {
+        display: block
+      }
+
     </style>
-    
-    <div class="container main-content">
+
+    <div class="container-fluid token-input-container">
+
       <div class="row">
-        <div class="col-xs-12 col-sm-6">
-          <div class="pull-right">
-            <iron-icon class="input-edit-icon hover-full-opacity hover-pointer" icon="editor:mode-edit"></iron-icon>
-          </div>
-          <paper-input-container always-float-label>
-            <label>Token Email Template</label>
-            <textarea class="ct-textarea" name="name" rows="8" cols="80" label="Dormant Meter Template"></textarea>
-          </paper-input-container>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-          <div class="pull-right">
-            <iron-icon class="input-edit-icon hover-full-opacity hover-pointer" icon="editor:mode-edit"></iron-icon>
-          </div>
-          <paper-input-container always-float-label>
-            <label>Token SMS Template</label>
-            <textarea class="ct-textarea" label="Textarea label" rows="8" cols="80"></textarea>
-          </paper-input-container>
+        <div class="col-sm-3 col-sm-offset-9">
+          <paper-button
+                  class$="btn btn-block [[_computeBtnStyle(_isStateEdit)]]" on-tap="_editBtnHandler">[[_computeButtonText(_isStateEdit)]]</paper-button>
         </div>
       </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <paper-button class="primary pull-right">Save Changes</paper-button>
+
+      <form class="" is="iron-form">
+
+        <div class="row">
+          <div class="col-sm-4">
+            <div><strong>Dormant Meter Email Template</strong></div>
+          </div>
+          <div class="col-sm-8">
+            <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
+              <paper-textarea
+                      class="input-element"
+                      no-label
+                      required
+                      auto-validate
+                      error-message="Please enter message template" ></paper-textarea>
+            </ct-editable-switcher>
+            <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
+          </div>
         </div>
-      </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <div><strong>Token SMS Template</strong></div>
+          </div>
+          <div class="col-sm-8">
+            <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
+              <paper-textarea
+                      class="input-element"
+                      no-label
+                      char-counter
+                      maxlength="160"
+                      required
+                      auto-validate
+                      error-message="Please enter message template" ></paper-textarea>
+            </ct-editable-switcher>
+            <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
+          </div>
+        </div>
+
+      </form>
+
     </div>
+
   </template>
   <script>
-    Polymer({
+      Polymer({
 
-      is: 'ct-view-settings-tokens',
+          is: 'ct-view-settings-tokens',
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 'ct-view-settings-tokens',
-        },
-      },
+          properties: {
+              _isStateEdit : {
+                  type: Boolean,
+                  value: function() {
+                      return false;
+                  }
+              },
 
-    });
+          },
+
+          listeners : {
+              'iron-form-presubmit': '_formHandler'
+          },
+
+          _computeReadOnly : function(status){
+              return (!status);
+          },
+
+          _computeButtonText: function(isEdit){
+              return (isEdit) ? 'Save Template' : 'Edit Template';
+          },
+
+          _computeBtnStyle : function(isEdit){
+              return (isEdit) ? "btn-primary" : "btn-default";
+          },
+
+          _toggleStatus : function(){
+              this._isStateEdit = !this._isStateEdit;
+          },
+
+          _editBtnHandler : function(){
+              var form = this.$$('form');
+
+              if(this._isStateEdit){
+                  if(form.validate()){
+                      form.submit();
+                  }
+              } else {
+                  this._toggleStatus();
+              }
+          },
+
+          _formHandler : function(e){
+              var form = this.$$('form');
+              e.preventDefault();
+              this.fire('updateNotifications', form.serialize());
+              this._toggleStatus();
+          },
+
+      });
   </script>
 </dom-module>
