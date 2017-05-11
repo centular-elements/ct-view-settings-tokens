@@ -4,6 +4,9 @@
   "main": "ct-view-settings-tokens.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
+    "paper-input": "PolymerElements/paper-input#^1.1.24",
+    "paper-button": "PolymerElements/paper-button#^1.0.15",
+    "ct-shared-styles": "git://github.com/Centular/shared-styles.git"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
