@@ -22,24 +22,43 @@ Element to view and edit Email and SMS templates for Tokens
     <style is="custom-style">
       :host {
         display: block
+        --paper-input-container:{
+          border-top: 1px solid #ccc;
+          border-left: 1px solid #ccc;
+          border-right: 1px solid #ccc;
+          border-bottom: none;
+          padding: 0 !important;
+        };
+
+        --paper-input-container-input: {
+          text-overflow: ellipsis;
+          width: calc(100% - 20px);
+          margin-left: 10px;
+        };
+
+        --paper-input-container-label: {
+          margin-left: 10px;
+        };
+      }
+      .row-easy {
+        padding: 10px 0;
       }
 
     </style>
 
     <div class="container-fluid token-input-container">
-
       <div class="row">
         <div class="col-sm-3 col-sm-offset-9">
           <paper-button
-                  class$="btn btn-block [[_computeBtnStyle(_isStateEdit)]]" on-tap="_editBtnHandler">[[_computeButtonText(_isStateEdit)]]</paper-button>
+                  class$="btn btn-block [[_computeBtnStyle(_isStateEdit)]]" on-tap="_editBtnHandler" raised>[[_computeButtonText(_isStateEdit)]]</paper-button>
         </div>
       </div>
 
       <form class="" is="iron-form">
 
-        <div class="row">
+        <div class="row row-easy">
           <div class="col-sm-4">
-            <div><strong>Dormant Meter Email Template</strong></div>
+            <div><h4>Dormant Meter Email Template</h4></div>
           </div>
           <div class="col-sm-8">
             <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
@@ -54,9 +73,9 @@ Element to view and edit Email and SMS templates for Tokens
           </div>
         </div>
 
-        <div class="row">
+        <div class="row row-easy">
           <div class="col-sm-4">
-            <div><strong>Token SMS Template</strong></div>
+            <div><h4>Token SMS Template</h4></div>
           </div>
           <div class="col-sm-8">
             <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
